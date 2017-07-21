@@ -159,6 +159,14 @@ class Configuration implements ConfigurationInterface
                             ->scalarNode('repository_class')->cannotBeEmpty()->defaultValue('Ekino\WordpressBundle\Repository\UserMetaRepository')->end()
                         ->end()
                     ->end()
+                    ->arrayNode('ewwwio_images')
+                    ->addDefaultsIfNotSet()
+                        ->children()
+                            ->scalarNode('class')->cannotBeEmpty()->defaultValue('Ekino\WordpressBundle\Entity\EWWWIOImages')->end()
+                            ->scalarNode('manager')->cannotBeEmpty()->defaultValue('ekino.wordpress.manager.ewwwio_images_default')->end()
+                            ->scalarNode('repository_class')->cannotBeEmpty()->defaultValue('Ekino\WordpressBundle\Repository\EWWWIOImagesRepository')->end()
+                        ->end()
+                    ->end()
                 ->end()
             ->end();
     }

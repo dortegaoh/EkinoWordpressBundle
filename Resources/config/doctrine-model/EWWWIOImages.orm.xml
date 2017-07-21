@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<doctrine-mapping xmlns="http://doctrine-project.org/schemas/orm/doctrine-mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://doctrine-project.org/schemas/orm/doctrine-mapping http://doctrine-project.org/schemas/orm/doctrine-mapping.xsd">
+    <mapped-superclass name="Ekino\WordpressBundle\Model\EWWWIOImages">
+        <field name="attachmentId" column="attachment_id" type="integer"/>
+        <field name="gallery" column="gallery" />
+        <field name="resize" column="resize" type="integer" />
+        <field name="path" column="path" type="text" />
+        <field name="converted" column="converted" type="text" />
+        <field name="results" column="results" />
+        <field name="imageSize" column="image_size" type="integer" />
+        <field name="origSize" column="orig_size" type="integer" />
+        <field name="backup" column="backup" />
+        <field name="level" column="level" type="integer" />
+        <field name="pending" column="pending" type="boolean" />
+        <field name="updates" column="updates" type="integer" />
+    </mapped-superclass>
+</doctrine-mapping>

@@ -64,6 +64,7 @@ class PostExtension extends \Twig_Extension
             new \Twig_SimpleFunction('wp_comments_open', [$this, 'isCommentingOpened']),
             new \Twig_SimpleFunction('wp_get_permalink', [$this, 'getPermalink']),
             new \Twig_SimpleFunction('wp_get_the_post_thumbnail_url', [$this, 'getThumbnailUrl']),
+            new \Twig_SimpleFunction('wp_get_the_optimized_post_thumbnail_url', [$this, 'getOptimizedThumbnailUrl']),
             new \Twig_SimpleFunction('wp_have_comments', [$this, 'haveComments']),
             new \Twig_SimpleFunction('wp_post_password_required', [$this, 'isPostPasswordRequired'], ['needs_context' => true]),
         ];
@@ -165,4 +166,15 @@ class PostExtension extends \Twig_Extension
     {
         return $this->postManager->getThumbnailPath($post);
     }
+
+    /**
+     * @param Post $post
+     *
+     * @return string
+     */
+    public function getOptimizedThumbnailUrl(Post $post)
+    {
+        return $this->postManager->getOptimizedThumbnailPath($post);
+    }
+
 }

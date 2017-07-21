@@ -36,15 +36,22 @@ class PostManager extends BaseManager
     protected $postMetaManager;
 
     /**
+     * @var EWWWIOImagesManager
+     */
+    protected $imagesManager;
+
+    /**
      * @param EntityManager   $em
      * @param string          $class
      * @param PostMetaManager $postMetaManager
+     * @param EWWWIOImagesManager $imagesManager
      */
-    public function __construct(EntityManager $em, $class, PostMetaManager $postMetaManager)
+    public function __construct(EntityManager $em, $class, PostMetaManager $postMetaManager, EWWWIOImagesManager $imagesManager)
     {
         parent::__construct($em, $class);
 
         $this->postMetaManager = $postMetaManager;
+        $this->imagesManager = $imagesManager;
     }
 
     /**
@@ -114,6 +121,33 @@ class PostManager extends BaseManager
         }
 
         return $post->getGuid();
+    }
+
+    /**
+     * @param Post $post
+     *
+     * @return string
+     */
+    public function getOptimizedThumbnailPath(Post $post)
+    {
+        if (!$thumbnailPostMeta = $this->postMetaManager->getThumbnailPostId($post)) {
+            return '';
+        }
+
+        /** @var $post Post */
+        if (!$post = $this->find($thumbnailPostMeta->getValue())) {
+            return '';
+        }
+
+        $pieces = explode("/", $post->getGuid());
+        $fileName = array_pop($pieces);
+        $base = preg_replace('/' . $fileName .'$/', '', $post->getGuid());
+
+        $newFile = explode('/', $this->imagesManager->getOptimizedImage($fileName));
+
+        $url = $base . end($newFile);
+
+        return $url;
     }
 
     /**

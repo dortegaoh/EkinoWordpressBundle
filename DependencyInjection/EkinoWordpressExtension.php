@@ -41,6 +41,7 @@ class EkinoWordpressExtension extends Extension
         'term_taxonomy',
         'user',
         'user_meta',
+        'ewwwio_images',
     ];
 
     /**
