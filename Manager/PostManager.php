@@ -140,10 +140,13 @@ class PostManager extends BaseManager
         }
 
         $pieces = explode("/", $post->getGuid());
-        $fileName = array_pop($pieces);
-        $base = preg_replace('/' . $fileName .'$/', '', $post->getGuid());
+        $realFileName = array_pop($pieces);
+        $fileName = explode(".", $realFileName);
+        $filename = array_reverse($fileName);
+        $fileName = end($filename);
+        $base = preg_replace('/' . $realFileName .'$/', '', $post->getGuid());
 
-        $newFile = explode('/', $this->imagesManager->getOptimizedImage($fileName));
+        $newFile = explode('/', $this->imagesManager->getOptimizedImage($fileName, $thumbnailPostMeta->getValue()));
 
         $url = $base . end($newFile);
 

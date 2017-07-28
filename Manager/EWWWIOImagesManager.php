@@ -34,9 +34,14 @@ class EWWWIOImagesManager extends BaseManager
      *
      * @return string
      */
-    public function getOptimizedImage($media)
+    public function getOptimizedImage($media, $mediaId)
     {
-        $query = $this->repository->getOptimizedMediaQuery($media);
+        $query = $this->repository->getOptimizedMediaQuery($media, $mediaId);
+
+        if(empty($query->getArrayResult())) {
+            return "";
+        }
+
         return $query->getArrayResult()[0]["path"];
     }
 }
