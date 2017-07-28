@@ -26,7 +26,7 @@ class EWWWIOImagesRepository extends EntityRepository
      *
      * @return \Doctrine\ORM\Query
      */
-    public function getOptimizedMediaQuery($media)
+    public function getOptimizedMediaQuery($media, $mediaId)
     {
         $query = $this->createQueryBuilder('e')
             ->where('e.path LIKE :media')
@@ -34,6 +34,12 @@ class EWWWIOImagesRepository extends EntityRepository
             ->getQuery();
 
         $attachmentId = $query->getArrayResult()[0]["attachmentId"];
+
+        foreach($query->getArrayResult() as $result) {
+            if ($mediaId == $result["attachmentId"]) {
+                $attachmentId = $result["attachmentId"];
+            }
+        }
 
         return $query = $this->createQueryBuilder('e')
             ->where('e.attachmentId = :attachmentId')
