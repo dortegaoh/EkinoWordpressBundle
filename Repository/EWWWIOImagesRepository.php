@@ -45,7 +45,7 @@ class EWWWIOImagesRepository extends EntityRepository
 
         return $query = $this->createQueryBuilder('e')
             ->where('e.attachmentId = :attachmentId')
-            ->andWhere("e.resize = 'blog-grid' or e.resize = 'full or e.resize = 'large'")
+            ->andWhere("e.resize = 'blog-grid' or e.resize = 'full' or e.resize = 'large'")
             ->setParameter('attachmentId', $attachmentId)
             ->orderBy('e.resize')
             ->getQuery();
