@@ -29,6 +29,8 @@ class EWWWIOImagesRepository extends EntityRepository
     public function getOptimizedMediaQuery($media, $mediaId)
     {
 
+        $sizes = ["blog-grid", "medium_large", "large", "medium", "full"];
+
         $query = $this->createQueryBuilder('e')
             ->where('e.path LIKE :media')
             ->setParameter('media', "%" . $media . "%")
@@ -43,12 +45,20 @@ class EWWWIOImagesRepository extends EntityRepository
             }
         }
 
-        return $query = $this->createQueryBuilder('e')
-            ->where('e.attachmentId = :attachmentId')
-            ->andWhere("e.resize = 'blog-grid' or e.resize = 'full' or e.resize = 'medium_large' or e.resize = 'large'")
-            ->setParameter('attachmentId', $attachmentId)
-            ->orderBy('e.resize')
-            ->getQuery();
+        foreach ($sizes as $size) {
+            $query = $this->createQueryBuilder('e')
+                ->where('e.attachmentId = :attachmentId')
+                ->andWhere("e.resize = :size")
+                ->setParameter('attachmentId', $attachmentId)
+                ->setParameter('size', $size)
+                ->getQuery();
 
+            if(!empty($query->getArrayResult())) {
+                return $query;
+            }
+
+        }
+
+        return null;
     }
 }

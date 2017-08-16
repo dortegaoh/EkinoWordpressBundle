@@ -146,7 +146,14 @@ class PostManager extends BaseManager
         $fileName = end($filename);
         $base = preg_replace('/' . $realFileName .'$/', '', $post->getGuid());
 
-        $newFile = explode('/', $this->imagesManager->getOptimizedImage($fileName, $thumbnailPostMeta->getValue()));
+        $image = $this->imagesManager->getOptimizedImage($fileName, $thumbnailPostMeta->getValue());
+
+        //Si no encuentra ninguna cargo la de por defecto
+        if(is_null($image)) {
+            return $post->getGuid();
+        }
+
+        $newFile = explode('/', $image);
 
         $url = $base . end($newFile);
 

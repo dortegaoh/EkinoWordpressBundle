@@ -38,8 +38,8 @@ class EWWWIOImagesManager extends BaseManager
     {
         $query = $this->repository->getOptimizedMediaQuery($media, $mediaId);
 
-        if(empty($query->getArrayResult())) {
-            return "";
+        if(is_null($query) or empty($query->getArrayResult())) {
+            return null;
         }
 
         return $query->getArrayResult()[0]["path"];
