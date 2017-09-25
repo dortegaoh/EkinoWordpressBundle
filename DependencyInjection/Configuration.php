@@ -167,6 +167,14 @@ class Configuration implements ConfigurationInterface
                             ->scalarNode('repository_class')->cannotBeEmpty()->defaultValue('Ekino\WordpressBundle\Repository\EWWWIOImagesRepository')->end()
                         ->end()
                     ->end()
+                    ->arrayNode('quick_access_variables')
+                    ->addDefaultsIfNotSet()
+                        ->children()
+                            ->scalarNode('class')->cannotBeEmpty()->defaultValue('Ekino\WordpressBundle\Entity\QuickAccessVariables')->end()
+                            ->scalarNode('manager')->cannotBeEmpty()->defaultValue('ekino.wordpress.manager.quick_access_variables_default')->end()
+                            ->scalarNode('repository_class')->cannotBeEmpty()->defaultValue('Ekino\WordpressBundle\Repository\QuickAccessVariablesRepository')->end()
+                        ->end()
+                    ->end()
                 ->end()
             ->end();
     }

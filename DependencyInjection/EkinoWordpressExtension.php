@@ -42,6 +42,7 @@ class EkinoWordpressExtension extends Extension
         'user',
         'user_meta',
         'ewwwio_images',
+        'quick_access_variables',
     ];
 
     /**

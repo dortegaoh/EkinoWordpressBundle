@@ -14,6 +14,7 @@ use Doctrine\ORM\EntityManager;
 use Ekino\WordpressBundle\Entity\Post;
 use Ekino\WordpressBundle\Repository\PostRepository;
 use Hautelook\Phpass\PasswordHash;
+use Ekino\WordpressBundle\Entity\QuickAccessVariables;
 use Symfony\Component\HttpFoundation\Request;
 
 /**
@@ -41,17 +42,24 @@ class PostManager extends BaseManager
     protected $imagesManager;
 
     /**
+     * @var QuickAccessVariablesManager
+     */
+    protected $quickAccessVariablesManager;
+
+    /**
      * @param EntityManager   $em
      * @param string          $class
      * @param PostMetaManager $postMetaManager
      * @param EWWWIOImagesManager $imagesManager
      */
-    public function __construct(EntityManager $em, $class, PostMetaManager $postMetaManager, EWWWIOImagesManager $imagesManager)
+    public function __construct(EntityManager $em, $class, PostMetaManager $postMetaManager, EWWWIOImagesManager $imagesManager, QuickAccessVariablesManager $quickAccessVariablesManager)
     {
         parent::__construct($em, $class);
 
+        $this->em = $em;
         $this->postMetaManager = $postMetaManager;
         $this->imagesManager = $imagesManager;
+        $this->quickAccessVariablesManager = $quickAccessVariablesManager;
     }
 
     /**
@@ -130,34 +138,43 @@ class PostManager extends BaseManager
      */
     public function getOptimizedThumbnailPath(Post $post)
     {
-        if (!$thumbnailPostMeta = $this->postMetaManager->getThumbnailPostId($post)) {
-            return '';
+        $post_name = $post->getName();
+        $variable = $this->quickAccessVariablesManager->getCachedImage($post_name);
+
+        if (!is_null($variable)) {
+            return $variable;
+        } else {
+            if (!$thumbnailPostMeta = $this->postMetaManager->getThumbnailPostId($post)) {
+                return '';
+            }
+
+            /** @var $post Post */
+            if (!$post = $this->find($thumbnailPostMeta->getValue())) {
+                return '';
+            }
+
+            $pieces = explode("/", $post->getGuid());
+            $realFileName = array_pop($pieces);
+            $fileName = explode(".", $realFileName);
+            $filename = array_reverse($fileName);
+            $fileName = end($filename);
+            $base = preg_replace('/' . $realFileName .'$/', '', $post->getGuid());
+
+            $image = $this->imagesManager->getOptimizedImage($fileName, $thumbnailPostMeta->getValue());
+
+            //Si no encuentra ninguna cargo la de por defecto
+            if(is_null($image)) {
+                return $post->getGuid();
+            }
+
+            $newFile = explode('/', $image);
+
+            $url = $base . end($newFile);
+
+            $this->quickAccessVariablesManager->saveCachedImage($post_name, $url);
+
+            return $url;
         }
-
-        /** @var $post Post */
-        if (!$post = $this->find($thumbnailPostMeta->getValue())) {
-            return '';
-        }
-
-        $pieces = explode("/", $post->getGuid());
-        $realFileName = array_pop($pieces);
-        $fileName = explode(".", $realFileName);
-        $filename = array_reverse($fileName);
-        $fileName = end($filename);
-        $base = preg_replace('/' . $realFileName .'$/', '', $post->getGuid());
-
-        $image = $this->imagesManager->getOptimizedImage($fileName, $thumbnailPostMeta->getValue());
-
-        //Si no encuentra ninguna cargo la de por defecto
-        if(is_null($image)) {
-            return $post->getGuid();
-        }
-
-        $newFile = explode('/', $image);
-
-        $url = $base . end($newFile);
-
-        return $url;
     }
 
     /**

@@ -30,6 +30,7 @@
             <argument>%ekino.wordpress.entity.post.class%</argument>
             <argument type="service" id="ekino.wordpress.manager.post_meta"/>
             <argument type="service" id="ekino.wordpress.manager.ewwwio_images"/>
+            <argument type="service" id="ekino.wordpress.manager.quick_access_variables_default"/>
         </service>
 
         <service id="ekino.wordpress.manager.post_meta_default" class="Ekino\WordpressBundle\Manager\PostMetaManager" public="false">
@@ -65,6 +66,11 @@
         <service id="ekino.wordpress.manager.ewwwio_images_default" class="Ekino\WordpressBundle\Manager\EWWWIOImagesManager" public="false">
             <argument type="service" id="doctrine.orm.entity_manager" />
             <argument>%ekino.wordpress.entity.ewwwio_images.class%</argument>
+        </service>
+
+        <service id="ekino.wordpress.manager.quick_access_variables_default" class="Ekino\WordpressBundle\Manager\QuickAccessVariablesManager" public="false">
+            <argument type="service" id="doctrine.orm.entity_manager" />
+            <argument>%ekino.wordpress.entity.quick_access_variables.class%</argument>
         </service>
 
     </services>
